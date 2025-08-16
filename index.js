@@ -1,3 +1,4 @@
+const dotnev=require('dotenv');
 const express=require('express');
 const path=require('path');
 const app=express();
@@ -9,7 +10,12 @@ const cookieParser=require('cookie-parser');
 const {token} = require('./services/authentication');
 const Blog = require('./models/blog');
 
-mongoose.connect('mongodb://localhost:27017/Blogify')
+
+dotnev.config();
+console.log(process.env.DB_URL);
+console.log(process.env.PORT);
+
+mongoose.connect(process.env.DB_URL)
 .then((e) => {
     console.log("Connected to MongoDB");
 })
@@ -18,8 +24,7 @@ mongoose.connect('mongodb://localhost:27017/Blogify')
 });
 
 app.use(express.urlencoded({ extended: false }));
-
-const port=8000;
+const port = process.env.PORT || 8000;
 app.set("view engine","ejs");
 app.set("views",path.resolve("./views"));
 
@@ -43,5 +48,5 @@ app.use("/blog", blogRoute);
 
 
 app.listen(port,()=>{
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server is running on port ${process.env.PORT}`);
 });
